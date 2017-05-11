@@ -119,6 +119,13 @@ typedef NS_ENUM(NSInteger, HMSegmentedControlType) {
 @property (nonatomic) CGFloat selectionIndicatorBoxOpacity;
 
 /**
+ 设置条状指示器的圆角半径
+ 
+ 默认无圆角
+ */
+@property (nonatomic) CGFloat selectionIndicatorStripCornerRadius;
+
+/**
  Width the vertical divider between segments that is added when `verticalDividerEnabled` is set to YES.
  
  Default is `1.0f`

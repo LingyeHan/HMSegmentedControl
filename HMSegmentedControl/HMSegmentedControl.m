@@ -204,6 +204,13 @@
     self.selectionIndicatorBoxLayer.opacity = _selectionIndicatorBoxOpacity;
 }
 
+- (void)setSelectionIndicatorStripCornerRadius:(CGFloat)selectionIndicatorStripCornerRadius {
+    _selectionIndicatorStripCornerRadius = selectionIndicatorStripCornerRadius;
+    
+    self.selectionIndicatorStripLayer.masksToBounds = YES;
+    self.selectionIndicatorStripLayer.cornerRadius = selectionIndicatorStripCornerRadius;
+}
+
 - (void)setSegmentWidthStyle:(HMSegmentedControlSegmentWidthStyle)segmentWidthStyle {
     // Force HMSegmentedControlSegmentWidthStyleFixed when type is HMSegmentedControlTypeImages.
     if (self.type == HMSegmentedControlTypeImages) {
@@ -397,14 +404,18 @@
     } else if (self.type == HMSegmentedControlTypeTextImages){
 		[self.sectionImages enumerateObjectsUsingBlock:^(id iconImage, NSUInteger idx, BOOL *stop) {
             UIImage *icon = iconImage;
-            CGFloat imageWidth = icon.size.width;
-            CGFloat imageHeight = icon.size.height;
+            //CGFloat imageWidth = icon.size.width;
+            //CGFloat imageHeight = icon.size.height;
 			
             CGFloat stringHeight = [self measureTitleAtIndex:idx].height;
-			CGFloat yOffset = roundf(((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2) - (stringHeight / 2));
+			//CGFloat yOffset = roundf(((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2) - (stringHeight / 2));
             
             CGFloat imageXOffset = self.segmentEdgeInset.left; // Start with edge inset
-            CGFloat textXOffset  = self.segmentEdgeInset.left;
+            CGFloat imageHeight = roundf(CGRectGetHeight(self.frame) - self.segmentEdgeInset.top - 8.0f - stringHeight - self.segmentEdgeInset.bottom);
+            imageHeight = MIN(icon.size.height, imageHeight);
+            CGFloat imageWidth = MIN(icon.size.width, imageHeight);
+            
+            CGFloat textXOffset = self.segmentEdgeInset.left;
             CGFloat textWidth = 0;
             
             if (self.segmentWidthStyle == HMSegmentedControlSegmentWidthStyleFixed) {
@@ -430,7 +441,8 @@
                 textWidth = [self.segmentWidthsArray[idx] floatValue];
             }
             
-            CGFloat imageYOffset = roundf((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2.0f);
+            CGFloat imageYOffset = self.segmentEdgeInset.top;
+            CGFloat yOffset = imageYOffset + imageHeight + 8.0f;
             CGRect imageRect = CGRectMake(imageXOffset, imageYOffset, imageWidth, imageHeight);
             CGRect textRect = CGRectMake(textXOffset, yOffset, textWidth, stringHeight);
             
@@ -558,7 +570,7 @@
     CGFloat indicatorYOffset = 0.0f;
     
     if (self.selectionIndicatorLocation == HMSegmentedControlSelectionIndicatorLocationDown) {
-        indicatorYOffset = self.bounds.size.height - self.selectionIndicatorHeight + self.selectionIndicatorEdgeInsets.bottom;
+        indicatorYOffset = self.bounds.size.height - self.selectionIndicatorHeight - self.selectionIndicatorEdgeInsets.bottom;
     }
     
     if (self.selectionIndicatorLocation == HMSegmentedControlSelectionIndicatorLocationUp) {
